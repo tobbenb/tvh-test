@@ -1,4 +1,4 @@
-FROM lsiobase/xenial
+FROM lsiobase/ubuntu:bionic
 MAINTAINER saarg
 
 # package version
