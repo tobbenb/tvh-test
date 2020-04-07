@@ -27,6 +27,7 @@ RUN \
 	git \
 	gzip \
 	libavahi-client-dev \
+	libdvbcsa-dev \
 	libhdhomerun-dev \
 	libiconv-hook-dev \
 	libssl-dev \
