@@ -41,8 +41,24 @@ RUN \
  git clone https://github.com/tvheadend/tvheadend.git /tmp/tvheadend && \
  cd /tmp/tvheadend && \
  ./configure \
+	`#Encoding` \
 	--enable-ffmpeg_static \
-	--enable-hdhomerun_static && \
+	--enable-libfdkaac_static \
+	--enable-libtheora_static \
+	--enable-libopus_static \
+	--enable-libvorbis_static \
+	--enable-libvpx_static \
+	--enable-libx264_static \
+	--enable-libx265_static \
+	--enable-libfdkaac \
+	\
+	`#Options` \
+	--disable-bintray_cache \
+	--enable-hdhomerun_static \
+	--enable-hdhomerun_client \
+	--enable-pngquant \
+	--enable-trace \
+	--enable-vaapi && \
  make && \
  make install && \
 
