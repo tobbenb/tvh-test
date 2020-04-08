@@ -5,6 +5,8 @@ MAINTAINER saarg
 #ARG ARGTABLE_VER="2.13"
 #ARG UNICODE_VER="2.09"
 #ARG XMLTV_VER="0.5.68"
+ARG TVH_VER="master"
+ARG TVHEADEND_COMMIT
 
 
 # Environment settings
@@ -26,6 +28,7 @@ RUN \
 	gettext \
 	git \
 	gzip \
+	jq \
 	libavahi-client-dev \
 	libdvbcsa-dev \
 	libhdhomerun-dev \
@@ -37,21 +40,17 @@ RUN \
 	python \
 	wget \
 	zlib1g-dev && \
-
-# build tvheadend
+ echo "**** build tvheadend ****" && \
+ if [ -z ${TVHEADEND_COMMIT+x} ]; then \
+	TVHEADEND_COMMIT=$(curl -sX GET https://api.github.com/repos/tvheadend/tvheadend/commits/${TVH_VER} \
+	| jq -r '. | .sha'); \
+ fi && \
  git clone https://github.com/tvheadend/tvheadend.git /tmp/tvheadend && \
  cd /tmp/tvheadend && \
+ git checkout ${TVHEADEND_COMMIT} && \
  ./configure \
 	`#Encoding` \
 	--enable-ffmpeg_static \
-	--enable-libfdkaac_static \
-	--enable-libtheora_static \
-	--enable-libopus_static \
-	--enable-libvorbis_static \
-	--enable-libvpx_static \
-	--enable-libx264_static \
-	--enable-libx265_static \
-	--enable-libfdkaac \
 	--disable-libav \
 	\
 	`#Options` \
@@ -63,8 +62,7 @@ RUN \
 	--enable-vaapi && \
  make && \
  make install && \
-
-# install dependencies for comskip
+ echo "**** install dependencies for comskip ****" && \
  apt-get install -qy --no-install-recommends \
 	libargtable2-dev \
 	libavformat-dev \
@@ -87,18 +85,16 @@ RUN \
 	libvpx-dev \
 	libx264-dev \
 	libx265-dev && \
-
-# build comskip
+ echo "**** build comskip ****" && \
  git clone git://github.com/erikkaashoek/Comskip /tmp/comskip && \
  cd /tmp/comskip && \
  ./autogen.sh && \
  ./configure \
 	--bindir=/usr/bin \
 	--sysconfdir=/config/comskip && \
- make -j 4 && \
+ make && \
  make install && \
-
-# remove build dependencies
+ echo "**** remove build dependencies ****" && \
  apt autoremove && \
  apt-get purge -qy --allow-remove-essential \
 	autoconf \
@@ -138,20 +134,17 @@ RUN \
 	python \
 	wget \
 	zlib1g-dev && \
-
-# install runtime dependencies
+ echo "**** install runtime dependencies ****" && \
  apt-get install -qy --no-install-recommends \
 	libargtable2-0 \
 	libavahi-client3 \
 	libavahi-common3 \
-	libavformat-ffmpeg56 \
 	libc6 \
 	libdbus-1-3 \
 	libssl1.0.0 \
 	xmltv \
 	zlib1g && \
-
-# cleanup
+ echo "**** cleanup ****" && \
  apt-get clean && \
  rm -rf \
 	/tmp/* \
@@ -160,7 +153,3 @@ RUN \
 
 # copy local files
 COPY root/ /
-
-# ports and volumes
-EXPOSE 9981 9982
-VOLUME /config /recordings
