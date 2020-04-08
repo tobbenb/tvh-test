@@ -52,6 +52,7 @@ RUN \
 	--enable-libx264_static \
 	--enable-libx265_static \
 	--enable-libfdkaac \
+	--disable-libav \
 	\
 	`#Options` \
 	--disable-bintray_cache \
