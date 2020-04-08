@@ -32,7 +32,7 @@ RUN \
 	libiconv-hook-dev \
 	libssl-dev \
 	libtool \
-	libva2 \
+	libva-dev \
 	pkg-config \
 	python \
 	wget \
