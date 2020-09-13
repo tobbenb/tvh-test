@@ -38,16 +38,18 @@ RUN \
 	libva-dev \
 	pkg-config \
 	python \
+	python3 \
+	python3-requests \
 	wget \
 	zlib1g-dev && \
  echo "**** build tvheadend ****" && \
- if [ -z ${TVHEADEND_COMMIT+x} ]; then \
-	TVHEADEND_COMMIT=$(curl -sX GET https://api.github.com/repos/tvheadend/tvheadend/commits/${TVH_VER} \
-	| jq -r '. | .sha'); \
- fi && \
- git clone https://github.com/tvheadend/tvheadend.git /tmp/tvheadend && \
+# if [ -z ${TVHEADEND_COMMIT+x} ]; then \
+#	TVHEADEND_COMMIT=$(curl -sX GET https://api.github.com/repos/tvheadend/tvheadend/commits/${TVH_VER} \
+#	| jq -r '. | .sha'); \
+# fi && \
+ git clone -b 4461-hdhomerun-livetv https://github.com/azlm8t/tvheadend.git /tmp/tvheadend && \
  cd /tmp/tvheadend && \
- git checkout ${TVHEADEND_COMMIT} && \
+# git checkout ${TVHEADEND_COMMIT} && \
  ./configure \
 	`#Encoding` \
 	--enable-ffmpeg_static \
